@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Dropdown } from "react-bootstrap";
 
 const categories = [
   { id: 9, name: "General Knowledge" },
@@ -8,11 +9,15 @@ const categories = [
 ];
 
 const CategorySelection = ({ onSelectCategory }) => {
-  const [selectedCategory, setSelectedCategory] = useState(categories[0].id);
+  const [selectedCategory, setSelectedCategory] = useState(categories[0]);
+
+  const handleSelect = (category) => {
+    setSelectedCategory(category);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSelectCategory(selectedCategory);
+    onSelectCategory(selectedCategory.id);
   };
 
   return (
@@ -20,18 +25,23 @@ const CategorySelection = ({ onSelectCategory }) => {
       <div className="card-body">
         <h5 className="card-title">Select Category</h5>
         <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <select
-              className="form-control"
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}>
+          <Dropdown
+            onSelect={(eventKey) =>
+              handleSelect(
+                categories.find((cat) => cat.id === parseInt(eventKey))
+              )
+            }>
+            <Dropdown.Toggle variant="primary" id="dropdown-basic">
+              {selectedCategory.name}
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
               {categories.map((category) => (
-                <option key={category.id} value={category.id}>
+                <Dropdown.Item key={category.id} eventKey={category.id}>
                   {category.name}
-                </option>
+                </Dropdown.Item>
               ))}
-            </select>
-          </div>
+            </Dropdown.Menu>
+          </Dropdown>
           <button type="submit" className="btn btn-primary mt-3">
             Start Quiz
           </button>
